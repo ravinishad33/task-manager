@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,11 +9,35 @@
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap');
-        body { font-family: 'Plus Jakarta Sans', sans-serif; }
-        .task-done { text-decoration: line-through; color: #94a3b8; }
-        .glass { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.3); }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        .task-done {
+            text-decoration: line-through;
+            color: #94a3b8;
+        }
+
+        .glass {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
     </style>
 </head>
+<nav class="glass mb-8 rounded-2xl shadow-sm">
+    <div class="max-w-2xl mx-auto px-6 py-4 flex justify-between items-center">
+        <div class="flex items-center gap-2 font-bold text-slate-800">
+            <i data-lucide="layout-list" class="text-blue-600"></i> TaskNexus
+        </div>
+        <div class="flex gap-6">
+            <a href="index.html" class="text-blue-600 font-bold border-b-2 border-blue-600">App</a>
+            <a href="about.html" class="text-slate-500 hover:text-blue-600 font-medium transition">How it Works</a>
+        </div>
+    </div>
+</nav>
+
 <body class="bg-gradient-to-br from-slate-50 to-blue-100 min-h-screen p-6 md:p-12">
 
     <div class="max-w-2xl mx-auto">
@@ -22,17 +47,19 @@
                 <p id="dateDisplay" class="text-slate-500 font-medium"></p>
             </div>
             <div class="text-right">
-                <span id="progressText" class="text-xs font-bold text-blue-600 uppercase tracking-wider">0% Completed</span>
+                <span id="progressText" class="text-xs font-bold text-blue-600 uppercase tracking-wider">0%
+                    Completed</span>
                 <div class="w-32 h-2 bg-slate-200 rounded-full mt-2 overflow-hidden">
-                    <div id="progressBar" class="h-full bg-blue-600 transition-all duration-500" style="width: 0%"></div>
+                    <div id="progressBar" class="h-full bg-blue-600 transition-all duration-500" style="width: 0%">
+                    </div>
                 </div>
             </div>
         </header>
 
         <div class="glass rounded-2xl p-2 flex gap-2 mb-8 shadow-xl shadow-blue-900/5">
-            <input type="text" id="taskInput" placeholder="Add a new mission..." 
+            <input type="text" id="taskInput" placeholder="Add a new mission..."
                 class="bg-transparent flex-1 px-6 py-4 focus:outline-none text-slate-700 font-medium">
-            <button onclick="addTask()" 
+            <button onclick="addTask()"
                 class="bg-blue-600 text-white px-8 py-4 rounded-xl font-bold hover:bg-blue-700 active:scale-95 transition-all shadow-lg shadow-blue-200 flex items-center gap-2">
                 <i data-lucide="plus-circle" class="w-5 h-5"></i> Add
             </button>
@@ -46,7 +73,8 @@
         <ul id="taskList" class="space-y-3"></ul>
 
         <div class="mt-8 flex justify-center">
-            <button onclick="clearAll()" class="text-slate-400 hover:text-red-500 text-sm font-semibold flex items-center gap-1 transition-colors">
+            <button onclick="clearAll()"
+                class="text-slate-400 hover:text-red-500 text-sm font-semibold flex items-center gap-1 transition-colors">
                 <i data-lucide="trash-2" class="w-4 h-4"></i> Clear All Tasks
             </button>
         </div>
@@ -56,7 +84,7 @@
         const input = document.getElementById('taskInput');
         const list = document.getElementById('taskList');
         const emptyState = document.getElementById('emptyState');
-        
+
         // Initial setup
         document.addEventListener('DOMContentLoaded', () => {
             renderTasks();
@@ -96,7 +124,7 @@
         }
 
         function clearAll() {
-            if(confirm('Wipe all tasks?')) {
+            if (confirm('Wipe all tasks?')) {
                 localStorage.setItem('nexus_tasks', '[]');
                 renderTasks();
             }
@@ -105,7 +133,7 @@
         function renderTasks() {
             const tasks = JSON.parse(localStorage.getItem('nexus_tasks') || '[]');
             list.innerHTML = '';
-            
+
             if (tasks.length === 0) {
                 emptyState.classList.remove('hidden');
             } else {
@@ -135,10 +163,11 @@
             const total = tasks.length;
             const done = tasks.filter(t => t.done).length;
             const percent = total === 0 ? 0 : Math.round((done / total) * 100);
-            
+
             document.getElementById('progressBar').style.width = `${percent}%`;
             document.getElementById('progressText').innerText = `${percent}% Completed`;
         }
     </script>
 </body>
+
 </html>

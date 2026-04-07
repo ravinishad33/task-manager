@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About - Task Manager</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .glass { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.3); }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-slate-50 to-blue-100 min-h-screen p-6 md:p-12">
+
+    <div class="max-w-2xl mx-auto">
+        <nav class="glass mb-12 rounded-2xl shadow-sm">
+            <div class="px-6 py-4 flex justify-between items-center">
+                <div class="flex items-center gap-2 font-bold text-slate-800">
+                    <i data-lucide="layout-list" class="text-blue-600"></i> TaskNexus
+                </div>
+                <div class="flex gap-6">
+                    <a href="index.html" class="text-slate-500 hover:text-blue-600 font-medium transition">App</a>
+                    <a href="about.html" class="text-blue-600 font-bold border-b-2 border-blue-600">How it Works</a>
+                </div>
+            </div>
+        </nav>
+
+        <header class="mb-10 text-center">
+            <h1 class="text-4xl font-bold text-slate-800 mb-4">User Guide</h1>
+            <p class="text-slate-600">Master your productivity with these simple steps.</p>
+        </header>
+
+        <div class="space-y-6">
+            <div class="glass p-6 rounded-2xl flex gap-6 items-start">
+                <div class="bg-blue-600 text-white w-10 h-10 rounded-full flex items-center justify-center shrink-0 font-bold">1</div>
+                <div>
+                    <h3 class="text-xl font-bold text-slate-800 mb-2">Capture Tasks</h3>
+                    <p class="text-slate-600">Type your task in the input field and hit <strong>Enter</strong> or click <strong>Add</strong>. Your tasks are saved instantly.</p>
+                </div>
+            </div>
+
+            <div class="glass p-6 rounded-2xl flex gap-6 items-start">
+                <div class="bg-blue-600 text-white w-10 h-10 rounded-full flex items-center justify-center shrink-0 font-bold">2</div>
+                <div>
+                    <h3 class="text-xl font-bold text-slate-800 mb-2">Track Progress</h3>
+                    <p class="text-slate-600">Click on any task to mark it as complete. The progress bar at the top will update in real-time as you crush your goals.</p>
+                </div>
+            </div>
+
+            <div class="glass p-6 rounded-2xl flex gap-6 items-start">
+                <div class="bg-blue-600 text-white w-10 h-10 rounded-full flex items-center justify-center shrink-0 font-bold">3</div>
+                <div>
+                    <h3 class="text-xl font-bold text-slate-800 mb-2">Zero Data Loss</h3>
+                    <p class="text-slate-600">We use <strong>LocalStorage</strong> technology. This means your tasks stay on your computer even if you close the tab or restart your browser.</p>
+                </div>
+            </div>
+        </div>
+
+        <footer class="mt-12 text-center">
+            <a href="index.html" class="inline-flex items-center gap-2 bg-slate-900 text-white px-8 py-4 rounded-xl font-bold hover:bg-slate-800 transition shadow-lg">
+                Start Building Now <i data-lucide="arrow-right" class="w-5 h-5"></i>
+            </a>
+        </footer>
+    </div>
+
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>
