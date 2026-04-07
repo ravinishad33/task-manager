@@ -3,9 +3,142 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Nexus Task Manager</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .task-done { text-decoration: line-through; color: #94a3b8; }
+        .glass { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.3); }
+    </style>
 </head>
-<body>
-    <h1>Task Manager</h1>
+<body class="bg-gradient-to-br from-slate-50 to-blue-100 min-h-screen p-6 md:p-12">
+
+    <div class="max-w-2xl mx-auto">
+        <header class="flex justify-between items-end mb-8">
+            <div>
+                <h1 class="text-4xl font-bold text-slate-800 tracking-tight">My Tasks</h1>
+                <p id="dateDisplay" class="text-slate-500 font-medium"></p>
+            </div>
+            <div class="text-right">
+                <span id="progressText" class="text-xs font-bold text-blue-600 uppercase tracking-wider">0% Completed</span>
+                <div class="w-32 h-2 bg-slate-200 rounded-full mt-2 overflow-hidden">
+                    <div id="progressBar" class="h-full bg-blue-600 transition-all duration-500" style="width: 0%"></div>
+                </div>
+            </div>
+        </header>
+
+        <div class="glass rounded-2xl p-2 flex gap-2 mb-8 shadow-xl shadow-blue-900/5">
+            <input type="text" id="taskInput" placeholder="Add a new mission..." 
+                class="bg-transparent flex-1 px-6 py-4 focus:outline-none text-slate-700 font-medium">
+            <button onclick="addTask()" 
+                class="bg-blue-600 text-white px-8 py-4 rounded-xl font-bold hover:bg-blue-700 active:scale-95 transition-all shadow-lg shadow-blue-200 flex items-center gap-2">
+                <i data-lucide="plus-circle" class="w-5 h-5"></i> Add
+            </button>
+        </div>
+
+        <div id="emptyState" class="text-center py-20 hidden">
+            <i data-lucide="clipboard-check" class="w-16 h-16 mx-auto text-slate-300 mb-4"></i>
+            <p class="text-slate-400 font-medium">All caught up! Time for a coffee?</p>
+        </div>
+
+        <ul id="taskList" class="space-y-3"></ul>
+
+        <div class="mt-8 flex justify-center">
+            <button onclick="clearAll()" class="text-slate-400 hover:text-red-500 text-sm font-semibold flex items-center gap-1 transition-colors">
+                <i data-lucide="trash-2" class="w-4 h-4"></i> Clear All Tasks
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const input = document.getElementById('taskInput');
+        const list = document.getElementById('taskList');
+        const emptyState = document.getElementById('emptyState');
+        
+        // Initial setup
+        document.addEventListener('DOMContentLoaded', () => {
+            renderTasks();
+            updateDate();
+            lucide.createIcons();
+        });
+
+        function updateDate() {
+            const options = { weekday: 'long', month: 'short', day: 'numeric' };
+            document.getElementById('dateDisplay').innerText = new Date().toLocaleDateString('en-US', options);
+        }
+
+        function addTask() {
+            if (!input.value.trim()) return;
+            const tasks = JSON.parse(localStorage.getItem('nexus_tasks') || '[]');
+            tasks.push({ id: Date.now(), text: input.value, done: false });
+            localStorage.setItem('nexus_tasks', JSON.stringify(tasks));
+            input.value = '';
+            renderTasks();
+        }
+
+        input.addEventListener('keypress', (e) => { if (e.key === 'Enter') addTask(); });
+
+        function toggleTask(id) {
+            const tasks = JSON.parse(localStorage.getItem('nexus_tasks'));
+            const index = tasks.findIndex(t => t.id === id);
+            tasks[index].done = !tasks[index].done;
+            localStorage.setItem('nexus_tasks', JSON.stringify(tasks));
+            renderTasks();
+        }
+
+        function deleteTask(id) {
+            const tasks = JSON.parse(localStorage.getItem('nexus_tasks'))
+                .filter(t => t.id !== id);
+            localStorage.setItem('nexus_tasks', JSON.stringify(tasks));
+            renderTasks();
+        }
+
+        function clearAll() {
+            if(confirm('Wipe all tasks?')) {
+                localStorage.setItem('nexus_tasks', '[]');
+                renderTasks();
+            }
+        }
+
+        function renderTasks() {
+            const tasks = JSON.parse(localStorage.getItem('nexus_tasks') || '[]');
+            list.innerHTML = '';
+            
+            if (tasks.length === 0) {
+                emptyState.classList.remove('hidden');
+            } else {
+                emptyState.classList.add('hidden');
+                tasks.forEach(task => {
+                    const li = document.createElement('li');
+                    li.className = `glass flex items-center justify-between p-4 rounded-xl transition-all hover:translate-x-1 ${task.done ? 'bg-slate-50/50' : 'bg-white'}`;
+                    li.innerHTML = `
+                        <div class="flex items-center gap-4 flex-1 cursor-pointer" onclick="toggleTask(${task.id})">
+                            <div class="w-6 h-6 rounded-full border-2 border-blue-400 flex items-center justify-center ${task.done ? 'bg-blue-500 border-blue-500' : ''}">
+                                ${task.done ? '<i data-lucide="check" class="w-4 h-4 text-white"></i>' : ''}
+                            </div>
+                            <span class="font-semibold ${task.done ? 'task-done' : 'text-slate-700'}">${task.text}</span>
+                        </div>
+                        <button onclick="deleteTask(${task.id})" class="text-slate-300 hover:text-red-500 p-2">
+                            <i data-lucide="x" class="w-5 h-5"></i>
+                        </button>
+                    `;
+                    list.appendChild(li);
+                });
+            }
+            updateProgress(tasks);
+            lucide.createIcons();
+        }
+
+        function updateProgress(tasks) {
+            const total = tasks.length;
+            const done = tasks.filter(t => t.done).length;
+            const percent = total === 0 ? 0 : Math.round((done / total) * 100);
+            
+            document.getElementById('progressBar').style.width = `${percent}%`;
+            document.getElementById('progressText').innerText = `${percent}% Completed`;
+        }
+    </script>
 </body>
 </html>
